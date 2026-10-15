@@ -48,7 +48,7 @@ class TaskManager:
         tasks = self.list_tasks()
         sorted_tasks = sorted(
             tasks,
-            key=lambda task: task.time, reverse=True
+            key=lambda task: task.time
         )
 
         for i, task in enumerate(sorted_tasks):
@@ -64,7 +64,7 @@ class TaskManager:
 
         print()
 
-        return tasks
+        return sorted_tasks
 
     def check_completed(self, selected_task):
         selected_task.completed = int(not selected_task.completed)
