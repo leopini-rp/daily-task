@@ -96,7 +96,7 @@ class TaskManager:
 
         task_id = selected_task.id_
 
-        update_task(new_title, new_time, task_id)
+        update_task(new_title.strip(), new_time, task_id)
 
     def remove_task(self, selected_task):
         valid_answer = ["Y", "y", "N", "n"]
