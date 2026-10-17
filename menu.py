@@ -17,7 +17,7 @@ class Menu(ABC):
 
         return range(len(self.menu_options))
 
-    def get_menu_option(self):
+    def select_menu_option(self):
         while True:
             self.show_menu()
 
@@ -31,14 +31,20 @@ class Menu(ABC):
             if validated_option is not None:
                 return self.menu_options[validated_option]
 
-    # def get_option(self, text, options):
-    #     while True:
-    #         option = input(f"{text}: ")
+    def get_valid_option(self, text_, tasks):
+        while True:
+            option = input(f"{text_}: ")
 
-    #         validated_option = validate_option(option, options)
+            if option.lower() == "sair":
+                return option
 
-    #         if validated_option is not None:
-    #             return validated_option
+            validated_option = validate_option(
+                option,
+                range(len(tasks))
+            )
+
+            if validated_option is not None:
+                return tasks[validated_option]
 
     @abstractmethod
     def run(self):
@@ -55,7 +61,7 @@ class MainMenu(Menu):
 
     def run(self):
         while True:
-            option = self.get_menu_option()
+            option = self.select_menu_option()
 
             if option == "Adicionar":
                 self.add_task()
@@ -79,7 +85,7 @@ class MainMenu(Menu):
             if validated_time is not None:
                 break
 
-        Task.create_task(task_title, validated_time)
+        Task.create_task(task_title.strip(), validated_time)
         clear_screen()
 
 
@@ -99,7 +105,7 @@ class TasksMenu(Menu):
             manager = TaskManager()
             manager.show_tasks()
 
-            option = self.get_menu_option()
+            option = self.select_menu_option()
 
             if option == "Marcar/desmarcar tarefa":
                 self.check_tasks()
@@ -122,39 +128,30 @@ class TasksMenu(Menu):
             print("Para sair digite 'sair'. \n")
             tasks = manager.show_tasks(show_index=True)
 
-            option = input("Marcar/desmarcar tarefa: ")
+            selected_option = self.get_valid_option(
+                "Marcar/desmarcar tarefa",
+                tasks
+            )
 
-            if option.lower() == "sair":
+            if selected_option == "sair":
                 clear_screen()
                 break
 
-            validated_option = validate_option(
-                option,
-                range(len(tasks))
-                )
-
-            if validated_option is not None:
-                clear_screen()
-                selected_task = tasks[validated_option]
-                manager.check_completed(selected_task)
+            clear_screen()
+            manager.check_completed(selected_option)
 
     def edit_task(self):
         clear_screen()
         manager = TaskManager()
         tasks = manager.show_tasks(show_index=True)
 
-        option = input("Editar tarefa: ")
-
-        validated_option = validate_option(
-            option,
-            range(len(tasks))
+        selected_option = self.get_valid_option(
+            "Editar tarefa",
+            tasks
         )
 
-        if validated_option is not None:
-            clear_screen()
-            selected_task = tasks[validated_option]
-
-            manager.edit_task(selected_task)
+        clear_screen()
+        manager.edit_task(selected_option)
 
     def remove_task(self):
         clear_screen()
@@ -164,18 +161,14 @@ class TasksMenu(Menu):
             print("Para sair digite 'sair'. \n")
             tasks = manager.show_tasks(show_index=True)
 
-            option = input("Remover tarefa: ")
+            selected_option = self.get_valid_option(
+                "Remover tarefa",
+                tasks
+            )
 
-            if option.lower() == "sair":
+            if selected_option == "sair":
                 clear_screen()
                 break
 
-            validated_option = validate_option(
-                option,
-                range(len(tasks))
-                )
-
-            if validated_option is not None:
-                selected_task = tasks[validated_option]
-                manager.remove_task(selected_task)
-                clear_screen()
+            manager.remove_task(selected_option)
+            clear_screen()
