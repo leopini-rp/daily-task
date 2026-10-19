@@ -5,6 +5,7 @@ from database import (
 from input_validation import (
     validate_task_time
 )
+from rich_interface import show_interface
 import os
 
 
@@ -42,7 +43,7 @@ class TaskManager:
                 )
             )
 
-        return tasks
+        return sorted(tasks, key=lambda task: task.time)
 
     def show_tasks(self, show_index=False):
         tasks = self.list_tasks()
@@ -51,20 +52,24 @@ class TaskManager:
             key=lambda task: task.time
         )
 
+        tasks_text = ""
+
         for i, task in enumerate(sorted_tasks):
             completed_check = (
                 "✓" if task.completed else " "
             )
 
             if show_index:
-                print(f"{i}- [{completed_check}] {task.time} - {task.title}")
+                tasks_text += (
+                    f"{i}- [{completed_check}] {task.time} - {task.title}\n"
+                    )
 
             else:
-                print(f"[{completed_check}] {task.time} - {task.title}")
+                tasks_text += (
+                    f"[{completed_check}] {task.time} - {task.title}\n"
+                    )
 
-        print()
-
-        return sorted_tasks
+        return tasks_text
 
     def check_completed(self, selected_task):
         selected_task.completed = int(not selected_task.completed)
@@ -98,15 +103,19 @@ class TaskManager:
 
         update_task(new_title.strip(), new_time, task_id)
 
-    def remove_task(self, selected_task):
+    def remove_task(self, selected_task, menu_text=""):
         valid_answer = ["Y", "y", "N", "n"]
         confirm_remove = ""
 
+        input_text = (f"Deseja remover '{selected_task.title}'? (Y/N) \n")
+
         while confirm_remove not in valid_answer:
             os.system("clear")
-            confirm_remove = input(
-                f"Deseja remover '{selected_task.title}'? (Y/N) \n"
+            show_interface(
+                menu_text,
+                f"{input_text}"
             )
+            confirm_remove = input()
 
         if confirm_remove.lower() == "y":
             remove_task(selected_task.id_)

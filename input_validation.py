@@ -12,12 +12,10 @@ def validate_option(option, options):
 
     except ValueError:
         os.system("clear")
-        print("OPÇÃO INVÁLIDA!\n")
         return None
 
     if option not in options:
         os.system("clear")
-        print("OPÇÃO INVÁLIDA!\n")
         return None
 
     return option
@@ -30,7 +28,6 @@ def validate_task_time(task_time):
 
     except ValueError:
         clear_screen()
-        print("Horário inválido.")
         return None
 
     return task_time
