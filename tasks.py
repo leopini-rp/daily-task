@@ -69,7 +69,9 @@ class TaskManager:
                     f"[{completed_check}] {task.time} - {task.title}\n"
                     )
 
-        return tasks_text
+        return (
+            tasks_text if tasks_text != "" else "Nenhuma tarefa para listar!"
+        )
 
     def check_completed(self, selected_task):
         selected_task.completed = int(not selected_task.completed)

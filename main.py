@@ -9,7 +9,6 @@ from menu import MainMenu
 
 db_init()
 clear_screen()
-print("Bem vindo ao seu gerenciador de tarefas!\n")
 
 main_menu = MainMenu()
 
